@@ -1,23 +1,53 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
-# dependencies
+# Dependencies
 /node_modules
-/.pnp
-.pnp.js
 
-# testing
-/coverage
-
-# production
+# Compiled output
 /build
 
-# misc
-.DS_Store
+# .env files (store secrets in environment variables on Vercel)
 .env.local
-.env.development.local
-.env.test.local
-.env.production.local
+.env.development
+.env.test
+.env.production
 
+# OS-generated files
+.DS_Store
+Thumbs.db
+
+# Logs
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# Editor-specific files
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# Build artifacts
+*.jar
+*.war
+*.ear
+*.log
+
+# Caches and local files
+.cache/
+.cypress/
+.cra-config.js
+
+# Mac-specific
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows-specific
+Thumbs.db
+ehthumbs.db
+
+# Linux-specific
+lost+found/
+*.swp
+*~

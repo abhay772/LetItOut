@@ -1,0 +1,39 @@
+/* .editable-textarea { 
+    background-color: aliceblue;
+    width: 100%;
+    height: 200px;
+  } */
+
+
+  /* Main textarea styles */
+.MainTextArea {
+  position: relative;
+  height: calc(100vh - 60px); /* Subtracting the header's height and some extra space */
+}
+
+.editable-textarea {
+  width: 100%;
+  height: 70%; /* Takes up most of the space, leaving some for the buttons */
+  padding: 10px;
+  font-size: 1em;
+  box-sizing: border-box;
+  resize: none; /* Disables manual resizing of the textarea */
+}
+
+/* Button styles */
+.MainTextArea button {
+  display: inline-block;
+  margin-top: 10px;
+  margin-right: 10px;
+  padding: 10px 20px;
+  background-color: #007BFF;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.MainTextArea button:hover {
+  background-color: #0056b3;
+}
