@@ -7,44 +7,58 @@ const JournalPage = ({username, journalDate, onSave}) => {
 
     const [content, setContent] = useState('');
 
-    const clearEntry = () => {
-      const affectedRows = sqlDao.deleteJournalEntry(username, journalDate);
-      if (affectedRows != 1) {
-        setContent('');
-      } else {
-        console.log("Entry not found");
+    const clearEntry = async () => {
+      try {
+          const affectedRows = await sqlDao.deleteJournalEntry(username, journalDate);
+          if (affectedRows != 1) {
+              setContent('');
+          } else {
+              console.log("Entry not found");
+          }
+      } catch (error) {
+          console.error("Error clearing entry:", error);
       }
-    }
+    };
 
     // Function to save the content
 
-    const save = () => {
+    const save = async () => {
+      try {
         const sanitizedContent = DOMPurify.sanitize(content, {
             FORBID_TAGS: ['a'], // Remove <a> tags
         });
 
-        const affectedRows = sqlDao.updateJournalEntry(username, journalDate, content);
+        let affectedRows = await sqlDao.updateJournalEntry(username, journalDate, sanitizedContent);
 
-        if (affectedRows != 1)
-        {
-          affectedRows = sqlDao.createJournalEntry(username, journalDate, content);
+        if (affectedRows != 1) {
+            affectedRows = await sqlDao.createJournalEntry(username, journalDate, sanitizedContent);
         }
 
         // Call the onSave callback after saving
         if (onSave) {
-          onSave();
+            onSave();
         }
-      };
+      } catch (error) {
+          console.error("Error saving entry:", error);
+      }
+    };
 
     useEffect(() => {
-        
-        // Loading the saved journal
-        const savedText = localStorage.getItem(localStorageKey);
 
-        if (savedText) {
-            setContent(savedText);
-        };
-    }, [journalDate, localStorageKey]);
+      const loadEntry = async () => {
+        try {
+            const entries = await sqlDao.findJournalEntries(username);
+            const entry = entries.find(entry => entry.JournalDate === journalDate);
+            if (entry) {
+                setContent(entry.JournalText);
+            }
+        } catch (error) {
+            console.error("Error loading entry:", error);
+        }
+    };
+
+      loadEntry();
+    }, [journalDate, username]);
 
     return (
         <div className="MainTextArea">
