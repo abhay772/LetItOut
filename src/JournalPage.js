@@ -1,17 +1,19 @@
 import React, {useEffect, useRef, useState} from "react";
 import DOMPurify from "dompurify";
 import './CSS/JournalPage.css';
+import sqlDao from "./DAL/SqlDao";
 
+const JournalPage = ({username, journalDate, onSave}) => {
 
-
-
-const JournalPage = ({journalDate, onSave}) => {
-
-    const localStorageKey = 'journalText-'+journalDate;
     const [content, setContent] = useState('');
 
-    const clearStorage = () => {
-      localStorage.removeItem(localStorageKey);
+    const clearEntry = () => {
+      const affectedRows = sqlDao.deleteJournalEntry(username, journalDate);
+      if (affectedRows != 1) {
+        setContent('');
+      } else {
+        console.log("Entry not found");
+      }
     }
 
     // Function to save the content
@@ -19,17 +21,20 @@ const JournalPage = ({journalDate, onSave}) => {
     const save = () => {
         const sanitizedContent = DOMPurify.sanitize(content, {
             FORBID_TAGS: ['a'], // Remove <a> tags
-            });
-    
-        localStorage.setItem(localStorageKey, sanitizedContent);
+        });
+
+        const affectedRows = sqlDao.updateJournalEntry(username, journalDate, content);
+
+        if (affectedRows != 1)
+        {
+          affectedRows = sqlDao.createJournalEntry(username, journalDate, content);
+        }
 
         // Call the onSave callback after saving
         if (onSave) {
           onSave();
         }
       };
-
-
 
     useEffect(() => {
         
@@ -49,7 +54,7 @@ const JournalPage = ({journalDate, onSave}) => {
             className="editable-textarea"
           ></textarea>
 
-         <button onClick={clearStorage}>Clear</button>
+         <button onClick={clearEntry}>Clear</button>
          <button onClick={save}>Save</button>
         </div>
       );
